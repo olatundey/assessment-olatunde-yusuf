@@ -1,0 +1,55 @@
+Key Design Considerations
+
+Architecture
+
+Modular and layered structure promotes maintainability and scalability.
+
+Controller Layer: Handles HTTP requests and sends appropriate responses.
+Service and Model Layer: Encapsulates business logic like validation and payment processing.
+
+Repository Layer: Manages in-memory data storage for transactions.
+External Integration Layer: Facilitates communication with the bank simulator.
+
+Domain Models: 
+Uses consistent and reusable models for request/response data.
+Embeds validation logic within models to ensure centralised and standardised rules.
+
+
+Validation
+
+Card Details:
+Card Number: Must contain 14–19 numeric characters.
+CVV: Must be 3–4 numeric characters.
+Expiry Date: Must be a future date to ensure validity.
+Currency: Restricts input to three ISO codes (USD, EUR, GBP) for simplicity.
+Amount: Represents values in minor units (e.g., $1.00 = 100) and enforces a positive integer.
+Strict Rules: Improper inputs are rejected without contacting the bank simulator.
+
+Security
+Sensitive data (e.g., full card numbers, CVV) is neither stored nor returned, ensuring PCI-DSS compliance.
+Only the last four digits of the card number are returned in responses for reconciliation purposes.
+HTTPS is assumed for secure communication in a production environment.
+
+Scalability
+In-memory storage is used for simplicity but can be replaced with a database in production.
+External Integration Layer is designed to support seamless migration to real acquiring bank systems.
+
+
+
+
+API Design
+RESTful Endpoints:
+/api/Payments: Processes payments and performs validation.
+/api/Payments/{id}: Retrieves payment details for reconciliation.
+
+Assumptions
+
+Simulator Usage:
+The bank simulator is a stand-in for a real acquiring bank.
+The simulator’s test cards and responses are assumed to reflect realistic scenarios.
+
+Security:
+Testing assumes a secure environment, with HTTPS enforced in production.
+
+Scale:
+The current system is suitable for testing but is designed with scalability in mind.
